@@ -27,6 +27,7 @@ app.use("/api/reviews", auth, reviewRoutes);
 app.use("/api/ratings", auth, ratingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favorites", auth, favoriteRoutes);
+
 app.get("/", (req, res) => {
   res.json({
     app: "Movix API",
@@ -34,7 +35,6 @@ app.get("/", (req, res) => {
     status: "Running 🚀"
   });
 });
-
 app.get("/api/profile", auth, (req, res) => {
   res.json({
     success: true,
