@@ -8,6 +8,7 @@ const ratingRoutes = require("./routes/rating.routes");
 const adminRoutes = require("./routes/admin.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
 
+const actorRoutes = require("./routes/actor.routes");
 const authRoutes = require("./routes/auth.routes");
 const movieRoutes = require("./routes/movie.routes");
 const auth = require("./middleware/auth");
@@ -28,6 +29,7 @@ app.use("/api/reviews", auth, reviewRoutes);
 app.use("/api/ratings", auth, ratingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favorites", auth, favoriteRoutes);
+app.use("/api/actors", actorRoutes);
 
 app.get("/", (req, res) => {
   res.json({
