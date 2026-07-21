@@ -323,4 +323,83 @@ router.delete("/:id", admin, async (req, res) => {
     });
   }
 });
+// Get complete movie details
+router.get("/:id/details", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Movie + Genre + Director
+    const movieResult = await pool.query(
+      `
+      SELECT
+        m.*,
+        g.name AS genre,
+        d.name AS director
+      FROM movies m
+      LEFT JOIN genres g ON m.genre_id = g.id
+      LEFT JOIN directors d ON m.director_id = d.id
+      WHERE m.id = $1
+      `,
+      [id]
+    );
+
+    if (movieResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Movie not found"
+      });
+    }
+
+    // Actors
+    const actorsResult = await pool.query(
+      `
+      SELECT a.id, a.name
+      FROM movie_actors ma
+      JOIN actors a
+        ON ma.actor_id = a.id
+      WHERE ma.movie_id = $1
+      `,
+      [id]
+    );
+
+    // Reviews
+    const reviewsResult = await pool.query(
+      `
+      SELECT
+        r.review,
+        u.name
+      FROM reviews r
+      JOIN users u
+        ON r.user_id = u.id
+      WHERE r.movie_id = $1
+      `,
+      [id]
+    );
+
+    // Average Rating
+    const ratingResult = await pool.query(
+      `
+      SELECT AVG(rating)::numeric(10,2) AS average_rating
+      FROM ratings
+      WHERE movie_id = $1
+      `,
+      [id]
+    );
+
+    res.json({
+      success: true,
+      movie: movieResult.rows[0],
+      actors: actorsResult.rows,
+      average_rating: ratingResult.rows[0].average_rating,
+      reviews: reviewsResult.rows
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+});
 module.exports = router;
