@@ -4,7 +4,37 @@ const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
 const router = express.Router();
-
+/**
+ * @swagger
+ * /api/actors:
+ *   post:
+ *     summary: Create a new actor
+ *     tags:
+ *       - Actors
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *               bio:
+ *                 type: string
+ *               birth_date:
+ *                 type: string
+ *                 format: date
+ *               photo_url:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Actor created successfully
+ */
 // Create actor (Admin only)
 router.post("/", auth, admin, async (req, res) => {
   try {
@@ -29,7 +59,19 @@ router.post("/", auth, admin, async (req, res) => {
     });
   }
 });
-
+/**
+ * @swagger
+ * /api/actors:
+ *   get:
+ *     summary: Get all actors
+ *     tags:
+ *       - Actors
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of actors
+ */
 // Get all actors
 router.get("/", auth, async (req, res) => {
   try {
