@@ -7,12 +7,14 @@ const ratingRoutes = require("./routes/rating.routes");
 
 const adminRoutes = require("./routes/admin.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
-
+const watchlistRoutes = require("./routes/watchlist.routes");
 const actorRoutes = require("./routes/actor.routes");
 const directorRoutes = require("./routes/director.routes");
 const movieActorRoutes = require("./routes/movieActor.routes");
 const authRoutes = require("./routes/auth.routes");
 const movieRoutes = require("./routes/movie.routes");
+const recommendationRoutes = require("./routes/recommendation.routes");
+const genreRoutes = require("./routes/genre.routes");
 const auth = require("./middleware/auth");
 const path = require("path");
 const app = express();
@@ -26,11 +28,15 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // Routes
 app.use("/api/auth", authRoutes);
+
+app.use("/api/movies/recommendations", auth, recommendationRoutes);
 app.use("/api/movies", auth, movieRoutes);
+app.use("/api/genres", genreRoutes);
 app.use("/api/reviews", auth, reviewRoutes);
 app.use("/api/ratings", auth, ratingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favorites", auth, favoriteRoutes);
+app.use("/api/watchlist", auth, watchlistRoutes);
 app.use("/api/actors", actorRoutes);
 app.use("/api/directors", directorRoutes);
 app.use("/api/movie-actors", movieActorRoutes);
