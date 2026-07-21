@@ -9,6 +9,7 @@ const adminRoutes = require("./routes/admin.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
 
 const actorRoutes = require("./routes/actor.routes");
+const directorRoutes = require("./routes/director.routes");
 const authRoutes = require("./routes/auth.routes");
 const movieRoutes = require("./routes/movie.routes");
 const auth = require("./middleware/auth");
@@ -30,7 +31,7 @@ app.use("/api/ratings", auth, ratingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/favorites", auth, favoriteRoutes);
 app.use("/api/actors", actorRoutes);
-
+app.use("/api/directors", directorRoutes);
 app.get("/", (req, res) => {
   res.json({
     app: "Movix API",
