@@ -41,7 +41,7 @@ const router = express.Router();
  *         description: Movie created successfully
  */
 // Create movie
-router.post("/", auth, upload.single("poster"), async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   try {
     const { title, description, year, genre_id } = req.body;
 const poster_url = req.file
