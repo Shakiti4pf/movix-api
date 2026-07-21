@@ -1,6 +1,6 @@
 const express = require("express");
 const pool = require("../config/database");
-
+const auth = require("../middleware/auth");
 const router = express.Router();
 /**
  * @swagger
@@ -31,7 +31,7 @@ const router = express.Router();
  *         description: Review added successfully
  */
 // Add review
-router.post("/:movieId", async (req, res) => {
+router.post("/:movieId", auth, async (req, res) => {
   try {
     const { review } = req.body;
 
@@ -54,8 +54,7 @@ router.post("/:movieId", async (req, res) => {
     });
   }
 });
-/**
- * @swagger
+/** * @swagger
  * /api/reviews/{movieId}:
  *   get:
  *     summary: Get movie reviews

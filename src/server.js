@@ -4,7 +4,10 @@ require("dotenv").config();
 console.log("JWT_SECRET =", process.env.JWT_SECRET);
 const reviewRoutes = require("./routes/review.routes");
 const ratingRoutes = require("./routes/rating.routes");
-
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 const adminRoutes = require("./routes/admin.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
 const watchlistRoutes = require("./routes/watchlist.routes");
@@ -18,7 +21,26 @@ const genreRoutes = require("./routes/genre.routes");
 const auth = require("./middleware/auth");
 const path = require("path");
 const app = express();
+// Security
+app.use(helmet());
 
+// Compress responses
+app.use(compression());
+
+// Log requests
+app.use(morgan("dev"));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: {
+    success: false,
+    message: "Too many requests. Please try again later."
+  }
+});
+
+app.use(limiter);
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
 

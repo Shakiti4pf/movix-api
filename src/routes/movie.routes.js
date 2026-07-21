@@ -1,6 +1,6 @@
 const express = require("express");
 const pool = require("../config/database");
-
+const { body, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const upload = require("../middleware/upload");
@@ -13,10 +13,42 @@ console.log("✅ movie.routes.js loaded");
 |--------------------------------------------------------------------------
 */
 router.post(
-  "/",
-  auth,
+    "/",
+    auth,
+    admin,
+
+  [
+    body("title")
+      .trim()
+      .notEmpty()
+      .withMessage("Title is required"),
+
+    body("description")
+      .trim()
+      .notEmpty()
+      .withMessage("Description is required"),
+
+    body("year")
+      .isInt({ min: 1888, max: 2100 })
+      .withMessage("Enter a valid year"),
+
+    body("genre_id")
+      .isInt()
+      .withMessage("Genre ID must be a number")
+  ],
+
   upload.single("poster"),
+
   async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array()
+      });
+    }
+
     try {
       const { title, description, year, genre_id } = req.body;
 
@@ -61,13 +93,13 @@ router.post(
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        movies.*,
-        genres.name AS genre
-      FROM movies
-      LEFT JOIN genres
-      ON movies.genre_id = genres.id
-      ORDER BY movies.id DESC
+SELECT
+    id,
+    title,
+    created_by
+FROM movies
+ORDER BY id;
+
     `);
 
     res.json({
@@ -223,7 +255,7 @@ router.get("/:id", async (req, res) => {
 | UPDATE MOVIE
 |--------------------------------------------------------------------------
 */
-router.put("/:id", admin, async (req, res) => {
+router.put("/:id", auth, admin, async (req, res) => {
   try {
     const { title, description, year, genre_id } = req.body;
 
@@ -273,7 +305,7 @@ router.put("/:id", admin, async (req, res) => {
 | DELETE MOVIE
 |--------------------------------------------------------------------------
 */
-router.delete("/:id", admin, async (req, res) => {
+router.delete("/:id", auth, admin, async (req, res) => {
   try {
     const result = await pool.query(
       "DELETE FROM movies WHERE id = $1 RETURNING *",

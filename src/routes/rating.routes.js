@@ -1,6 +1,6 @@
 const express = require("express");
 const pool = require("../config/database");
-
+const auth = require("../middleware/auth");
 const router = express.Router();
 /**
  * @swagger
@@ -33,7 +33,7 @@ const router = express.Router();
  *         description: Rating saved successfully
  */
 // Add or update rating
-router.post("/:movieId", async (req, res) => {
+router.post("/:movieId", auth, async (req, res) => {
   try {
     const { rating } = req.body;
 
