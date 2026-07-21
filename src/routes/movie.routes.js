@@ -323,6 +323,25 @@ router.delete("/:id", admin, async (req, res) => {
     });
   }
 });
+/**
+ * @swagger
+ * /api/movies/{id}/details:
+ *   get:
+ *     summary: Get complete movie details
+ *     tags:
+ *       - Movies
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Complete movie details
+ */
 // Get complete movie details
 router.get("/:id/details", auth, async (req, res) => {
   try {
